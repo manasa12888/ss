@@ -1,0 +1,61 @@
+services:
+  webapp:
+    image: l2
+    container_name: l2_webapp
+    ports:
+      - "8080:8080"
+    depends_on:
+      # - mysql_db
+      # - postgres_db
+      # - mongo_db
+    environment:
+      DB_HOST: mysql_db      # change to postgres_db OR mongo_db if needed
+      DB_PORT: 3306          # change to 5432 for Postgres OR 27017 for Mongo
+      DB_NAME: library
+      DB_USER: user
+      DB_PASSWORD: userpass
+
+  # ================= MySQL =================
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: library
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # ================= PostgreSQL =================
+  postgres_db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: library
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # ================= MongoDB =================
+  mongo_db:
+    image: mongo:6.0
+    container_name: mongo_db
+    environment:
+      MONGO_INITDB_DATABASE: library
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: userpass
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mysql_data:
+  postgres_data:
+  mongo_data:
